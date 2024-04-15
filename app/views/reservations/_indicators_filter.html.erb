@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0" id="filterForm" action="/reservations/indicators" method="get">
+  <select class="form-select mr-sm-2" name="scope" id="scopeSelect">
+    <option value="all" <%= 'selected' if @selected_scope == 'all' %>>All</option>
+    <option value="by_spectacle" <%= 'selected' if @selected_scope == 'by_spectacle' %>>By Spectacle ID</option>
+    <option value="by_representation" <%= 'selected' if @selected_scope == 'by_representation' %>>By Representation ID</option>
+  </select>
+        <select class="form-select mr-sm-2" name="id" id="idSelect">
+          <% @dropdown_options.each do |option| %>
+            <option value="<%= option %>">
+              <%= option %>
+            </option>
+          <% end %>
+        </select>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Obtenir</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get a reference to the second dropdown
+    var idSelect = document.getElementById("idSelect");
+
+    // Initially hide the second dropdown
+    // idSelect.style.display = "none";
+
+    // Add event listener to the scope select dropdown
+    document.getElementById("scopeSelect").addEventListener("change", function() {
+      // Show or hide the second dropdown based on the selected option
+      if (this.value === "all") {
+        idSelect.style.display = "none"; // Hide the second dropdown
+      } else {
+        idSelect.style.display = "inline-block"; // Show the second dropdown
+        // Submit the form when the scope select dropdown changes
+        document.getElementById("filterForm").submit();
+      }
+    });
+  });
+</script>

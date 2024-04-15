@@ -13,57 +13,80 @@ class ReservationsController < ApplicationController
     @reservations = Reservation.all
   end
 
-def indicators
+  def indicators
     case params[:scope]
     when 'by_spectacle'
-      # @dropdown_options = Spectacle.pluck(:id, :name).map { |id, name| { id: id, label: "#{name} (ID: #{id})" } }
       @dropdown_options = Spectacle.all.map { |spectacle| spectacle.id }
+      @selected_scope = 'by_spectacle'  # Set the selected scope for the dropdown
     when 'by_representation'
-      @dropdown_options = Representation.pluck(:id, :date).map { |id, date| { id: id, label: "#{date} (ID: #{id})" } }
+      # @dropdown_options = Representation.pluck(:id, :date).map { |id, date| { id: id, label: "#{date} (ID: #{id})" } }
+      @dropdown_options = Representation.all.map { |representation| representation.id }
+      @selected_scope = 'by_representation'  # Set the selected scope for the dropdown
     else
       @dropdown_options = []
+      @selected_scope = 'all'  # Set the selected scope for the dropdown
     end
-  reservations_count(params[:scope], params[:id])
-  reservations_clients_count
-  reservations_clients_average_age
-  reservations_average_price
+
+    if params[:id]
+      reservations_count(params[:scope], params[:id])
+      reservations_clients_count(params[:scope], params[:id])
+      reservations_clients_average_age(params[:scope], params[:id])
+      reservations_average_price(params[:scope], params[:id])
+    end
+  end
+
+  private
+
+  def reservations_count(scope, *id)
+    case scope
+    when 'all'
+      @reservations_count = Reservation.all.group_by { |reservation| reservation.reservation_external_id }
+                    .transform_values(&:uniq).count
+    when 'by_spectacle'
+      @reservations_count = Reservation.by_spectacle(id).count
+    when 'by_representation'
+      @reservations_count = Reservation.by_representation(id).count
+    end
+  end
+
+  def reservations_clients_count(scope, *id)
+    case scope
+    when 'all'
+      @clients_count = Client.all.count
+    when 'by_spectacle'
+      @clients_count = Reservation.by_spectacle(id).map {|spectacle| spectacle.client}.count
+    when 'by_representation'
+      @clients_count = Reservation.by_representation(id).map {|representation| representation.client}.count
+    end
+  end
+
+  def reservations_clients_average_age(scope, *id)
+    case scope
+    when 'all'
+      ages = Client.all.map {|client| client.age }.compact
+    when 'by_spectacle'
+      ages = Reservation.by_spectacle(id).map {|spectacle| spectacle.client.age}.compact
+    when 'by_representation'
+      ages = Reservation.by_representation(id).map {|representation| representation.client.age}.compact
+    end
+    sum_ages = ages.reduce(0, :+)
+    sum_ages == 0 ? @average_age = "Sans information": (@average_age = sum_ages.to_i / ages.count)
+  end
+
+  def reservations_average_price(scope, *id)
+    reservation_prices = Reservation.all.map {|reservation| reservation.prix }.compact
+
+    case scope
+    when 'all'
+      reservation_prices = Reservation.all.map {|reservation| reservation.prix }
+    when 'by_spectacle'
+      reservation_prices = Reservation.by_spectacle(id).map {|reservation| reservation.prix}
+    when 'by_representation'
+      reservation_prices = Reservation.by_representation(id).map {|representation| representation.prix}
+    end
+    sum_prices = reservation_prices.reduce(0, :+)
+    @average_reservation_price = (sum_prices.to_f/ reservation_prices.count).round(2)
+  end
+
 end
 
-private
-
-def reservations_count(scope, *id)
-  case scope
-  when 'all'
-    @reservations_count = Reservation.all.group_by { |reservation| reservation.reservation_external_id }
-                  .transform_values(&:uniq).count
-  when 'spectacle_external_id'
-    @reservations_count = Reservation.by_spectacle(id).count
-  when 'representation_external_id'
-    @reservations_count = Reservation.by_representation(id).count
-  else
-    @reservations_count = 0
-  end
-end
-
-
-  def reservations_clients_count
-    @clients_count = Client.all.count
-  end
-
-    def reservations_clients_average_age
-     ages = Client.all.map {|client| client.age }.compact
-     sum_ages = ages.reduce(0, :+)
-     @average_age = sum_ages.to_i / ages.count
-  end
-
-  def reservations_average_price
-     reservation_prices = Reservation.all.map {|reservation| reservation.prix }.compact
-     sum_prices = reservation_prices.reduce(0, :+)
-     @average_reservation_price = (sum_prices.to_f/ reservation_prices.count).round(2)
-
-    # representation_prices = Representation.all.reservations.all.map {|representation| representation.prix }.compact
-    #  sum_prices = representation_prices.reduce(0, :+)
-    #  @average_representation_price = (sum_prices.to_f / representation_prices.count).round(2)
-  end
-
-end
