@@ -1,0 +1,47 @@
+// /* app/assets/stylesheets/reservations.scss */
+
+.table-container {
+  border-collapse: collapse;
+  width: 90%;
+  /* Set width to 90% of the page */
+  height: 50%;
+  /* Set height to 50% of the page */
+  margin: auto;
+  /* Center the table horizontally */
+  overflow: auto;
+  /* Add scroll bars */
+}
+
+.content-table {
+  font-size: 0.9em;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.content-table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+}
+
+.content-table th,
+.content-table td {
+  padding: 12px 15px;
+}
+
+.content-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.content-table tbody tr:last-of-type {
+  border-bottom: 2px solid #009879;
+}
+
+.content-table tr:hover {
+  background-color: #ddd;
+}

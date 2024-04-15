@@ -1,0 +1,33 @@
+/* app/assets/stylesheets/reservations.scss */
+
+/* Style for the import form */
+.import-form {
+  margin-top: 5%;
+  margin-left: 5%;
+  padding-bottom: 5%;
+  /* Adjust margin as needed */
+}
+
+/* Styles for the file input */
+.import-file {
+  /* Add any specific styles for the file input */
+}
+
+/* Styles for the submit button */
+.import-submit {
+  background-color: #009879;
+  /* Match the background color of the table header */
+  color: #ffffff;
+  /* Text color */
+  border: none;
+  /* Remove border */
+  padding: 10px 20px;
+  /* Adjust padding as needed */
+  cursor: pointer;
+  /* Change cursor on hover */
+}
+
+.import-submit:hover {
+  background-color: #007a6b;
+  /* Darken the background color on hover */
+}

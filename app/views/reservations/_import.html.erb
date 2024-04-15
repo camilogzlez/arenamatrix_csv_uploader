@@ -1,0 +1,6 @@
+<div class="import-container">
+<%= form_tag import_reservations_path, method: :post, multipart: true, class: 'import-form' do %>
+  <%= file_field_tag :file, accept: ".csv", class: 'import-file' %>
+  <%= submit_tag '⚙️ Import', class: 'import-submit' %>
+<% end %>
+<div>
