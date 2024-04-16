@@ -1,9 +1,0 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  spectacle_external_id: 1
-  spectacle_name: MyString
-
-two:
-  spectacle_external_id: 1
-  spectacle_name: MyString

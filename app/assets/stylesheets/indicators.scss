@@ -54,3 +54,17 @@
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
+
+.collapse.navbar-collapse {
+  font-size: 14px;
+}
+
+.import-submit {
+  background-color: #596aee;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}

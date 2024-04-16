@@ -33,8 +33,13 @@ gem 'sass-rails', '~> 6.0.0'
 
 gem 'bootstrap-sass'
 
-gem 'jquery-rails'
+gem "chartkick"
 
+gem 'groupdate', '~> 2.5', '>= 2.5.2'
+
+gem 'jquery-rails'
+gem 'byebug', '~> 11.1', '>= 11.1.3'
+gem 'rails-controller-testing'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"

@@ -1,12 +1,12 @@
 class ReservationsController < ApplicationController
 
   def import
-    # return redirect_to request.referer, notice: 'No file added' if params[:file].nil?
-    # return redirect_to request.referer, notice: 'Only CSV files allowed' unless params[:file].content_type == 'text/csv'
+    return redirect_to request.referer, notice: 'Aucun fichier ajouté!' if params[:file].nil?
+    return redirect_to request.referer, notice: 'Seuls les fichiers CSV sont autorisés.!' unless params[:file].content_type == 'text/csv'
 
     CsvImportService.new.call(params[:file])
-
-    redirect_to request.referer, notice: 'Import started...'
+    redirect_to reservations_path
+    flash[:success] = "Yay! 🎉 Vous avez importé les réservations avec succès."
   end
 
   def index
@@ -16,51 +16,53 @@ class ReservationsController < ApplicationController
   def indicators
     case params[:scope]
     when 'by_spectacle'
-      @dropdown_options = Spectacle.all.map { |spectacle| spectacle.id }
+      @dropdown_options = Spectacle.all.map { |spectacle| { id: spectacle.id, name: spectacle.spectacle_name } }
       @selected_scope = 'by_spectacle'  # Set the selected scope for the dropdown
     when 'by_representation'
-      # @dropdown_options = Representation.pluck(:id, :date).map { |id, date| { id: id, label: "#{date} (ID: #{id})" } }
-      @dropdown_options = Representation.all.map { |representation| representation.id }
+      @dropdown_options = Representation.all.map { |representation| { id: representation.id, name: "#{representation.representation_external_id}-#{representation.representation_name}-#{formatted_date(representation.representation_date)} #{formatted_time(representation.representation_time)}" }}
       @selected_scope = 'by_representation'  # Set the selected scope for the dropdown
     else
       @dropdown_options = []
       @selected_scope = 'all'  # Set the selected scope for the dropdown
     end
 
-    if params[:id]
-      reservations_count(params[:scope], params[:id])
-      reservations_clients_count(params[:scope], params[:id])
-      reservations_clients_average_age(params[:scope], params[:id])
-      reservations_average_price(params[:scope], params[:id])
+    if params[:id].present?
+      id = params[:id].match(/:id=>(\d+)/)[1]
+      reservations_count(params[:scope], id)
+      reservations_clients_count(params[:scope], id)
+      reservations_clients_average_age(params[:scope], id)
+      reservations_average_price(params[:scope], id)
     end
   end
 
   private
 
-  def reservations_count(scope, *id)
+  def reservations_count(scope, id)
     case scope
     when 'all'
       @reservations_count = Reservation.all.group_by { |reservation| reservation.reservation_external_id }
                     .transform_values(&:uniq).count
     when 'by_spectacle'
-      @reservations_count = Reservation.by_spectacle(id).count
+      @reservations_count = Reservation.by_spectacle(id).all.group_by { |reservation| reservation.reservation_external_id }
+                    .transform_values(&:uniq).count
     when 'by_representation'
-      @reservations_count = Reservation.by_representation(id).count
+      @reservations_count = Reservation.by_representation(id).all.group_by { |reservation| reservation.reservation_external_id }
+                    .transform_values(&:uniq).count
     end
   end
 
-  def reservations_clients_count(scope, *id)
+  def reservations_clients_count(scope, id)
     case scope
     when 'all'
       @clients_count = Client.all.count
     when 'by_spectacle'
-      @clients_count = Reservation.by_spectacle(id).map {|spectacle| spectacle.client}.count
+      @clients_count = Reservation.by_spectacle(id).map {|spectacle| spectacle.client}.uniq.count
     when 'by_representation'
-      @clients_count = Reservation.by_representation(id).map {|representation| representation.client}.count
+      @clients_count = Reservation.by_representation(id).map {|representation| representation.client}.uniq.count
     end
   end
 
-  def reservations_clients_average_age(scope, *id)
+  def reservations_clients_average_age(scope, id)
     case scope
     when 'all'
       ages = Client.all.map {|client| client.age }.compact
@@ -73,7 +75,7 @@ class ReservationsController < ApplicationController
     sum_ages == 0 ? @average_age = "Sans information": (@average_age = sum_ages.to_i / ages.count)
   end
 
-  def reservations_average_price(scope, *id)
+  def reservations_average_price(scope, id)
     reservation_prices = Reservation.all.map {|reservation| reservation.prix }.compact
 
     case scope
@@ -85,8 +87,7 @@ class ReservationsController < ApplicationController
       reservation_prices = Reservation.by_representation(id).map {|representation| representation.prix}
     end
     sum_prices = reservation_prices.reduce(0, :+)
-    @average_reservation_price = (sum_prices.to_f/ reservation_prices.count).round(2)
+    @average_reservation_price = sprintf("%.2f", sum_prices.to_f / reservation_prices.count)
   end
 
 end
-
