@@ -31,6 +31,9 @@ gem "redis", ">= 4.0.1"
 
 gem 'sass-rails', '~> 6.0.0'
 
+gem 'pg'
+
+
 gem 'bootstrap-sass'
 
 gem "chartkick"
