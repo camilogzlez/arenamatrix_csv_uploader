@@ -21,4 +21,3 @@ services:
         sync: false
       - key: WEB_CONCURRENCY
         value: 2 # sensible default
-Don’t forget to commit and push this chan
