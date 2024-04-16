@@ -17,13 +17,14 @@ class ReservationsController < ApplicationController
     case params[:scope]
     when 'by_spectacle'
       @dropdown_options = Spectacle.all.map { |spectacle| { id: spectacle.id, name: spectacle.spectacle_name } }
-      @selected_scope = 'by_spectacle'  # Set the selected scope for the dropdown
+      @selected_scope = 'by_spectacle'
     when 'by_representation'
-      @dropdown_options = Representation.all.map { |representation| { id: representation.id, name: "#{representation.representation_external_id}-#{representation.representation_name}-#{formatted_date(representation.representation_date)} #{formatted_time(representation.representation_time)}" }}
-      @selected_scope = 'by_representation'  # Set the selected scope for the dropdown
+      @dropdown_options = Representation.all.map { |representation| { id: representation.id,
+                                                                      name: "#{representation.representation_external_id}-#{representation.representation_name}-#{formatted_date(representation.representation_date)} #{formatted_time(representation.representation_time)}" }}
+      @selected_scope = 'by_representation'
     else
       @dropdown_options = []
-      @selected_scope = 'all'  # Set the selected scope for the dropdown
+      @selected_scope = 'all'
     end
 
     if params[:id].present?

@@ -8,9 +8,9 @@
       <%= image_tag 'https://arenametrix.com/hubfs/Arenametrix_theme_aug2023/Logo-Arenametrix-%C3%A9criture-verte.png', alt: 'Arenametrix Logo', class: 'logo', size: '100' %>
       <form class="form-inline my-2 my-lg-0" id="filterForm" action="/reservations/indicators" method="get">
   <select class="form-select mr-sm-2" name="scope" id="scopeSelect">
-    <option value="all" <%= 'selected' if @selected_scope == 'all' %>>All</option>
-    <option value="by_spectacle" <%= 'selected' if @selected_scope == 'by_spectacle' %>>By Spectacle ID</option>
-    <option value="by_representation" <%= 'selected' if @selected_scope == 'by_representation' %>>By Representation ID</option>
+    <option value="all" <%= 'selected' if @selected_scope == 'all' %>>Toutes les réservations </option>
+    <option value="by_spectacle" <%= 'selected' if @selected_scope == 'by_spectacle' %>>Par spectacle</option>
+    <option value="by_representation" <%= 'selected' if @selected_scope == 'by_representation' %>>Par représentation</option>
   </select>
         <select class="form-select mr-sm-2" name="id" id="idSelect">
           <% @dropdown_options.each do |option| %>

@@ -8,7 +8,7 @@
       <%= image_tag 'https://arenametrix.com/hubfs/Arenametrix_theme_aug2023/Logo-Arenametrix-%C3%A9criture-verte.png', alt: 'Arenametrix Logo', class: 'logo', size: '100' %>
       <%= form_tag import_reservations_path, method: :post, multipart: true, class: 'import-form' do %>
         <%= file_field_tag :file, accept: ".csv", class: 'import-file' %>
-        <%= submit_tag '⚙️ Import', class: 'import-submit' %>
+        <%= submit_tag '⚙️ Importer', class: 'import-submit' %>
       <% end %>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
