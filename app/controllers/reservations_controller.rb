@@ -29,16 +29,18 @@ class ReservationsController < ApplicationController
 
     if params[:id].present?
       id = params[:id].match(/:id=>(\d+)/)[1]
+    else
+      id = nil
+    end
       reservations_count(params[:scope], id)
       reservations_clients_count(params[:scope], id)
       reservations_clients_average_age(params[:scope], id)
       reservations_average_price(params[:scope], id)
-    end
   end
 
   private
 
-  def reservations_count(scope, id)
+  def reservations_count(scope, *id)
     case scope
     when 'all'
       @reservations_count = Reservation.all.group_by { |reservation| reservation.reservation_external_id }
@@ -52,7 +54,7 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def reservations_clients_count(scope, id)
+  def reservations_clients_count(scope, *id)
     case scope
     when 'all'
       @clients_count = Client.all.count
@@ -63,7 +65,7 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def reservations_clients_average_age(scope, id)
+  def reservations_clients_average_age(scope, *id)
     case scope
     when 'all'
       ages = Client.all.map {|client| client.age }.compact
@@ -76,7 +78,7 @@ class ReservationsController < ApplicationController
     sum_ages == 0 ? @average_age = "Sans information": (@average_age = sum_ages.to_i / ages.count)
   end
 
-  def reservations_average_price(scope, id)
+  def reservations_average_price(scope, *id)
     reservation_prices = Reservation.all.map {|reservation| reservation.prix }.compact
 
     case scope
