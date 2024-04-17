@@ -29,13 +29,16 @@ class ReservationsController < ApplicationController
 
     if params[:id].present?
       id = params[:id].match(/:id=>(\d+)/)[1]
-    else
-      id = nil
-    end
       reservations_count(params[:scope], id)
       reservations_clients_count(params[:scope], id)
       reservations_clients_average_age(params[:scope], id)
       reservations_average_price(params[:scope], id)
+    else
+      reservations_count(params[:scope], id)
+      reservations_clients_count(params[:scope], id)
+      reservations_clients_average_age(params[:scope], id)
+      reservations_average_price(params[:scope], id)
+    end
   end
 
   private
@@ -74,8 +77,10 @@ class ReservationsController < ApplicationController
     when 'by_representation'
       ages = Reservation.by_representation(id).map {|representation| representation.client.age}.compact
     end
+    if ages != nil
     sum_ages = ages.reduce(0, :+)
     sum_ages == 0 ? @average_age = "Sans information": (@average_age = sum_ages.to_i / ages.count)
+    end
   end
 
   def reservations_average_price(scope, *id)
